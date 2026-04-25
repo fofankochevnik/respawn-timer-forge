@@ -4,10 +4,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderGuiEvent;
 import net.minecraft.client.Minecraft;
 
 @Mod(RespawnTimerMod.MODID)
@@ -16,30 +16,7 @@ public class RespawnTimerMod {
     public static final String MODID = "respawn_timer";
 
     public RespawnTimerMod(IEventBus modEventBus) {
-        modEventBus.addListener(this::onClientSetup);
-        modEventBus.addListener(this::registerOverlays);
         MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    private void onClientSetup(FMLClientSetupEvent event) {}
-
-    private void registerOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAboveAll("timer_hud", (gui, guiGraphics, deltaTracker) -> {
-            if (!TimerManager.isActive()) return;
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.options.hideGui) return;
-
-            int seconds = TimerManager.getRemainingSeconds();
-            int minutes = seconds / 60;
-            int secs = seconds % 60;
-            String text = String.format("%d:%02d", minutes, secs);
-
-            int color = TimerManager.isWarning() ? 0xFFFF3333 : 0xFFFFFFFF;
-            int textWidth = mc.font.width(text);
-            int screenWidth = guiGraphics.guiWidth();
-
-            guiGraphics.drawString(mc.font, text, screenWidth - textWidth - 8, 8, color, true);
-        });
     }
 
     @SubscribeEvent
@@ -50,5 +27,25 @@ public class RespawnTimerMod {
                 TimerManager.startTimer();
             }
         }
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void onRenderGui(RenderGuiEvent.Post event) {
+        if (!TimerManager.isActive()) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.options.hideGui) return;
+
+        int seconds = TimerManager.getRemainingSeconds();
+        int minutes = seconds / 60;
+        int secs = seconds % 60;
+        String text = String.format("%d:%02d", minutes, secs);
+
+        int color = TimerManager.isWarning() ? 0xFFFF3333 : 0xFFFFFFFF;
+        int textWidth = mc.font.width(text);
+        int screenWidth = event.getGuiGraphics().guiWidth();
+
+        event.getGuiGraphics().drawString(mc.font, text, screenWidth - textWidth - 8, 8, color, true);
     }
 }
