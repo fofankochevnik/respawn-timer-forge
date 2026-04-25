@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[52,)"
 license="${mod_license}"
+mixins = [{file="respawn_timer.mixins.json"}]
 
 [[mods]]
 modId="${mod_id}"
