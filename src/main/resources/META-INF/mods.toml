@@ -12,6 +12,7 @@ description="5-minute countdown timer after death."
 [[dependencies.${mod_id}]]
     modId="forge"
     type="required"
+    mandatory=true
     versionRange="[52,)"
     ordering="NONE"
     side="BOTH"
@@ -19,6 +20,7 @@ description="5-minute countdown timer after death."
 [[dependencies.${mod_id}]]
     modId="minecraft"
     type="required"
+    mandatory=true
     versionRange="[1.21.1,1.22)"
     ordering="NONE"
     side="BOTH"
