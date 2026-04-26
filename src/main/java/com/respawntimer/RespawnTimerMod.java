@@ -1,7 +1,6 @@
 package com.respawntimer;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -12,7 +11,7 @@ public class RespawnTimerMod {
 
     public static final String MODID = "respawn_timer";
 
-    public RespawnTimerMod(IEventBus modEventBus) {
+    public RespawnTimerMod() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
