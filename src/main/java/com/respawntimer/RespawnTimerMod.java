@@ -4,7 +4,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(RespawnTimerMod.MODID)
 public class RespawnTimerMod {
@@ -17,11 +18,8 @@ public class RespawnTimerMod {
 
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof net.minecraft.world.entity.player.Player) {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null && event.getEntity().getUUID().equals(mc.player.getUUID())) {
-                TimerManager.startTimer();
-            }
-        }
+        if (FMLEnvironment.dist != Dist.CLIENT) return;
+        if (!(event.getEntity() instanceof net.minecraft.world.entity.player.Player)) return;
+        ClientHelper.onDeath(event.getEntity().getUUID());
     }
 }
